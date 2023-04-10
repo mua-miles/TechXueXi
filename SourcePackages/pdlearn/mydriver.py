@@ -26,7 +26,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from pdlearn.globalvar import web
-from webServerConf import WebMessage, WebQrUrl, web_db
+from webServerConf import WebMessage, WebQrUrl, web_db, app
 
 from pdlearn import globalvar as gl, auto
 from pdlearn import user, user_agent
@@ -268,10 +268,9 @@ class Mydriver:
             qrurl, qcbase64 = self.sendmsg(chat_id)
 
         # 扫码登录后删除二维码和登录链接 准备
-        web_qr_url = web_db.session.query(
-            WebQrUrl).filter_by(url=qcbase64).first()
-        web_msg = web_db.session.query(
-            WebMessage).filter_by(text=qrurl).first()
+        with app.app_context():
+            web_qr_url = web_db.session.query(WebQrUrl).filter_by(url=qcbase64).first()
+            web_msg = web_db.session.query(WebMessage).filter_by(text=qrurl).first()
 
         # print(' ----------------------------------------------------------------')
         # print(web_qr_url)
